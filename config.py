@@ -1,0 +1,39 @@
+# Contains all parameters
+
+# Curates set of liquid, sector-grouped tickers (pairs within same sector)
+UNIVERSE = {
+    "beverages":    ["KO", "PEP", "MNST", "KDP"],
+    "banks":        ["JPM", "BAC", "WFC", "GS", "MS"],
+    "oil":          ["XOM", "CVX", "COP", "SLB"],
+    "tech":         ["MSFT", "GOOGL", "META", "AAPL"],
+    "retail":       ["WMT", "TGT", "COST", "DG"],
+}
+
+# --- Date range ---
+TRAIN_START = "2010-01-01"
+TRAIN_END   = "2019-12-31"
+TEST_START  = "2020-01-01"
+TEST_END    = "2024-12-31"
+
+# --- Pair selection ---
+COINT_PVALUE_THRESHOLD = 0.05     
+MIN_HALF_LIFE_DAYS     = 5         
+MAX_HALF_LIFE_DAYS     = 60        
+
+# --- Kalman filter (hedge ratio) ---
+KALMAN_DELTA           = 1e-4      
+KALMAN_VE              = 0.01      
+
+# --- Signal generation ---
+ROLLING_WINDOW         = 60        
+ENTRY_ZSCORE           = 2.0       
+EXIT_ZSCORE            = 0.0       
+STOP_LOSS_ZSCORE       = 3.5      
+
+# --- Regime (HMM) ---
+N_REGIMES              = 2        
+HMM_LOOKBACK           = 252       
+
+# --- Backtester ---
+TRANSACTION_COST_BPS   = 5        
+CAPITAL_PER_PAIR       = 10_000   
