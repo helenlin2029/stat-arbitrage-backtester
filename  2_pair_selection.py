@@ -14,12 +14,15 @@ from config import (
 )
 
 # ── Load price s──────────────────────
+# Trains based on data generated from file 1, limited by test interval
 prices = pd.read_csv("data/prices.csv", index_col=0, parse_dates=True)
 prices = prices[TRAIN_START:TRAIN_END]
 print(f"Loaded {prices.shape[0]} days of training data\n")
 
 
 # ── Estimate half-life of mean reversion ─────────────────────
+# Performs regression on pair daily change v. previous day's spread
+# If slope is positive, spread is increasing & pair is not mean-reverting --> return inf)
 def half_life(spread):
     spread = pd.Series(spread)
     lag    = spread.shift(1).dropna()
@@ -31,6 +34,7 @@ def half_life(spread):
 
 
 # ── Compute hedge ratio (simple OLS) ─────────────────────────
+# Note that the hedge ratio here is static. Dynamic is implemented via Kalman filter
 def hedge_ratio(y, x):
     return np.polyfit(x, y, 1)[0]
 
@@ -41,6 +45,7 @@ results = []
 for sector, tickers in UNIVERSE.items():
     tickers = [t for t in tickers if t in prices.columns]
     pairs   = list(combinations(tickers, 2))
+    # Change to permutation due to Engle Granger 
 
     print(f"Sector: {sector} — testing {len(pairs)} pairs")
 
@@ -51,6 +56,7 @@ for sector, tickers in UNIVERSE.items():
         # ADF test
         adf1 = adfuller(s1)[1]
         adf2 = adfuller(s2)[1]
+        # Finding individual tickers that are non-stationary
         if adf1 < 0.05 or adf2 < 0.05:
             continue
 
@@ -81,6 +87,7 @@ for sector, tickers in UNIVERSE.items():
 if not results:
     print("\nNo cointegrated pairs found. Try relaxing thresholds in config.py")
 else:
+    # Stores results in table, listing by descending p-value
     df = pd.DataFrame(results).sort_values("pvalue")
     print(f"\nFound {len(df)} valid pairs:\n")
     print(df.to_string(index=False))
