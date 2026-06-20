@@ -18,12 +18,14 @@ print(f"Generating signals for {len(pairs)} pairs...\n")
 
 # ── Compute rolling z-score ───────────────────────────────────
 def rolling_zscore(spread, window):
+    # Computes with data from 60 day rolling window, not fixed historical data
     mean = spread.rolling(window).mean()
     std  = spread.rolling(window).std()
     return (spread - mean) / (std + 1e-8)
 
 
 # ── Generate raw signals from z-score ─────────────────────────
+# Either -1, 0, or 1 to indicate position to take (short, long, idle)
 def generate_signals(z):
     signals  = pd.Series(0, index=z.index, dtype=float)
     position = 0  
@@ -78,6 +80,7 @@ for _, row in pairs.iterrows():
     # Generate raw signals 
     raw_signal = generate_signals(z)
 
+    # Regime-dependence; indicated how much capital should be put toward a pair
     sized_signal = raw_signal * regime
 
     all_zscores[label] = z
