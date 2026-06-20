@@ -19,6 +19,7 @@ print(f"Fitting HMM for {len(pairs)} pairs...\n")
 def build_features(spread, window=20):
     s = pd.Series(spread)
 
+    # Observes spread rolling std dev, z_score, and volatility of volatility
     roll_std  = s.rolling(window).std()
     roll_mean = s.rolling(window).mean()
     z_score   = (s - roll_mean) / (roll_std + 1e-8)
@@ -34,17 +35,12 @@ def build_features(spread, window=20):
 
 
 # ── Identify which HMM state is "stable" ──────────────────────
-def identify_stable_state(model, scaler, feature_cols):
-    low_vol  = np.array([[0.5, 0.0, 0.1]])   
-    high_vol = np.array([[3.0, 2.5, 1.5]])   
-
-    low_vol_scaled  = scaler.transform(low_vol)
-    high_vol_scaled = scaler.transform(high_vol)
-
-    low_scores  = model.score(low_vol_scaled)
-    high_scores = model.score(high_vol_scaled)
-
-    state_means = model.means_[:, 0]   
+def identify_stable_state(model):
+    # The HMM assigns state labels (0, 1) arbitrarily
+    # We identify stable as whichever state has lower average spread volatility
+    # model.means_ contains the average feature values for each state
+    # Column 0 is spread_vol 
+    state_means = model.means_[:, 0]
     stable_state = int(np.argmin(state_means))
     return stable_state
 
@@ -60,10 +56,12 @@ for _, row in pairs.iterrows():
     spread   = spreads[label].dropna()
     features = build_features(spread)
 
+    # HMM trains on training period, but variables are calculated for both training and learning periods
     train_features = features[TRAIN_START:TRAIN_END]
     all_features   = features[TRAIN_START:TEST_END]
 
     if len(train_features) < HMM_LOOKBACK:
+        # i.e. less than 252 days
         print(f"  {label}: not enough data to fit HMM, skipping")
         continue
 
@@ -81,7 +79,7 @@ for _, row in pairs.iterrows():
 
     state_probs = model.predict_proba(X_all)
 
-    stable_state = identify_stable_state(model, scaler, train_features.columns)
+    stable_state = identify_stable_state(model)
     p_stable     = state_probs[:, stable_state]
 
     all_p_stable[label] = pd.Series(p_stable, index=all_features.index)
