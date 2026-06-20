@@ -25,24 +25,30 @@ def kalman_hedge_ratio(y, x):
     beta     = np.zeros(n)         
     P        = np.zeros(n)      
     beta[0]  = y[0] / x[0]
+    # Certainty regarding hedge ratio; inital assumption = a bit unsure
     P[0]     = 1.0
 
     # Beta process noise
-    # Beta observation noise
     Vw = KALMAN_DELTA / (1 - KALMAN_DELTA)
+    # Beta observation noise
     Ve = KALMAN_VE
 
     # -- Filter loop --
     for t in range(1, n):
+        # Prediction for hedge ratio is based on previous day's calculation
+        # Uncertainty drifts due to market fluctuation
         beta_pred = beta[t-1]
         P_pred    = P[t-1] + Vw
 
+        # Stock A's price is predicted using hedge ratio, where x_t i Stock B's price
         x_t  = x[t]
         y_hat = beta_pred * x_t          
         err  = y[t] - y_hat              
 
+        # Kalman gain updates hegde ratio in favor of err fractionally proportional to K
         K        = P_pred * x_t / (x_t**2 * P_pred + Ve)
         beta[t]  = beta_pred + K * err   
+        # Gain is inversely proportional to updated uncertainty
         P[t]     = (1 - K * x_t) * P_pred  
 
     # -- Compute spread --
