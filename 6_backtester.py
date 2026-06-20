@@ -14,6 +14,7 @@ pairs        = pd.read_csv("data/pairs.csv")
 
 print(f"Running backtest for {len(pairs)} pairs...\n")
 
+# Converts basis points to decimal
 COST = TRANSACTION_COST_BPS / 10_000   
 
 
@@ -27,11 +28,13 @@ def backtest_pair(t1, t2, hedge_ratio, signal):
 
     spread_return = r1 - hedge_ratio * r2
 
+    # Computes the P&L in dollar amount
     pnl_raw = signal.shift(1) * spread_return * CAPITAL_PER_PAIR
 
     position_change = signal.diff().abs()
     costs = position_change * COST * CAPITAL_PER_PAIR
 
+    # Computes net P&L by accounting for costs/basis points per leg
     pnl_net = pnl_raw - costs
 
     return pnl_net
@@ -61,10 +64,12 @@ for _, row in pairs.iterrows():
 # ── Aggregate into a portfolio ────────────────────────────────
 pnl_df = pd.DataFrame(all_pnl).dropna(how="all")
 
+# Finds cumulative P&L across all pairs per day
 portfolio_pnl = pnl_df.sum(axis=1)
 
 cumulative_pnl = portfolio_pnl.cumsum()
 
+# Splits portfolio into training and testing; used to evaluate accuracy 
 train_pnl = portfolio_pnl[TRAIN_START:TRAIN_END]
 test_pnl  = portfolio_pnl[TEST_START:TEST_END]
 
@@ -83,6 +88,7 @@ for label, period_pnl in [("TRAIN (2010-2019)", train_pnl), ("TEST  (2020-2024)"
     total      = period_pnl.sum()
     daily_mean = period_pnl.mean()
     daily_std  = period_pnl.std()
+    # Converts daily Sharpe to annual
     sharpe     = (daily_mean / daily_std) * np.sqrt(252) if daily_std > 0 else 0
 
     # Maximum drawdown
