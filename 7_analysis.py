@@ -16,6 +16,7 @@ sized_signals = pd.read_csv("data/sized_signals.csv",   index_col=0, parse_dates
 zscores       = pd.read_csv("data/zscores.csv",         index_col=0, parse_dates=True)
 pairs         = pd.read_csv("data/pairs.csv")
 
+# Only looks as testing period
 test_pnl     = portfolio_pnl[TEST_START:TEST_END]
 test_pair_pnl = pnl_per_pair[TEST_START:TEST_END]
 
@@ -58,6 +59,7 @@ print("=" * 55)
 avg_p_stable = p_stable[TEST_START:TEST_END].mean(axis=1)
 avg_p_stable = avg_p_stable.reindex(test_pnl.index)
 
+# Allows the differentiation of P&L series
 stable_days = avg_p_stable > 0.6
 crisis_days = avg_p_stable <= 0.6
 
@@ -85,6 +87,7 @@ prices = pd.read_csv("data/prices.csv", index_col=0, parse_dates=True)
 from config import CAPITAL_PER_PAIR, TRANSACTION_COST_BPS
 COST = TRANSACTION_COST_BPS / 10_000
 
+# Simulates what ignoring HMM and trading every signal at full size would've looked like
 naive_pnl_all = {}
 for _, row in pairs.iterrows():
     t1, t2        = row["ticker_1"], row["ticker_2"]
@@ -113,6 +116,7 @@ print("\n  --- Regime-aware ---")
 for k, v in metrics(test_pnl).items():
     print(f"    {k:<20} {v}")
 
+# Positive Sharpe = regime-dependent prediction was better
 sharpe_improvement = metrics(test_pnl)["sharpe"] - metrics(naive_test)["sharpe"]
 print(f"\n  Sharpe improvement from regime filter: {sharpe_improvement:+.3f}")
 
@@ -129,6 +133,7 @@ for col in test_pair_pnl.columns:
         m["pair"] = col
         pair_summary.append(m)
 
+# Identifies which pairs generated returns v. losses; can use to examine method fallabilities
 pair_df = pd.DataFrame(pair_summary).set_index("pair")
 pair_df = pair_df.sort_values("sharpe", ascending=False)
 print(f"\n{pair_df[['total_pnl','sharpe','max_drawdown','win_rate']].to_string()}")
