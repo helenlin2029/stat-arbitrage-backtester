@@ -1,8 +1,0 @@
-sector,ticker_1,ticker_2,pvalue,hedge_ratio,half_life,spread_mean,spread_std
-banks,SCHW,BK,0.0036,1.2304,43.7,-9.7646,2.2501
-reits,PLD,AMT,0.0061,0.3731,51.0,4.7224,2.6551
-auto,TM,KMX,0.0062,1.0792,51.1,26.5196,7.4043
-beverages,KO,PEP,0.0063,0.3072,59.5,8.6558,1.4796
-retail,COST,DG,0.0156,1.9773,42.0,-2.308,11.2045
-insurance,PRU,LNC,0.0226,1.1756,55.1,11.914,2.4627
-insurance,ALL,GL,0.0496,1.0245,51.5,-2.8268,3.2661
