@@ -10,7 +10,7 @@ print(f"Computing Kalman spreads for {len(pairs)} pairs...\n")
 
 
 # ── Kalman filter implementation ─────────────────────────────
-def kalman_hedge_ratio(y, x):
+def kalman_hedge_ratio(y_in, x_in):
     """
     y: price series of stock 1 (the one we're 'buying')
     x: price series of stock 2 (the one we're hedging with)
@@ -20,7 +20,10 @@ def kalman_hedge_ratio(y, x):
         spread      : y - beta * x at each timestep
         std_series  : rolling std of the spread (used for z-score later)
     """
-    n = len(y)
+    idx = y_in.index
+    y   = y_in.values
+    x   = x_in.values
+    n   = len(y)
 
     beta     = np.zeros(n)         
     P        = np.zeros(n)      
@@ -54,7 +57,7 @@ def kalman_hedge_ratio(y, x):
     # -- Compute spread --
     spread = y - beta * x
 
-    return pd.Series(beta, index=y.index), pd.Series(spread, index=y.index)
+    return pd.Series(beta, index=idx), pd.Series(spread, index=idx)
 
 
 # ── Process every pair and save results ──────────────────────
@@ -69,9 +72,7 @@ for _, row in pairs.iterrows():
     y = prices[t1]
     x = prices[t2]
 
-    beta_series, spread = kalman_hedge_ratio(y.values, x.values)
-    beta_series.index   = y.index
-    spread.index        = y.index
+    beta_series, spread = kalman_hedge_ratio(y, x)
 
     all_betas[label]   = beta_series
     all_spreads[label] = spread
