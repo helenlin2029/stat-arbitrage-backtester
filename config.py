@@ -3,11 +3,18 @@
 # Curates set of liquid, sector-grouped tickers 
 # Pairs are chosen within same sector
 UNIVERSE = {
-    "beverages":    ["KO", "PEP", "MNST", "KDP"],
-    "banks":        ["JPM", "BAC", "WFC", "GS", "MS"],
-    "oil":          ["XOM", "CVX", "COP", "SLB"],
-    "tech":         ["MSFT", "GOOGL", "META", "AAPL"],
-    "retail":       ["WMT", "TGT", "COST", "DG"],
+    "beverages":    ["KO", "PEP", "MNST", "KDP", "STZ", "TAP", "BUD", "SAM"],
+    "banks":        ["JPM", "BAC", "WFC", "GS", "MS", "C", "USB", "PNC", "TFC", "SCHW", "BK", "STT"],
+    "oil":          ["XOM", "CVX", "COP", "SLB", "EOG", "MPC", "VLO", "PSX", "OXY", "HAL", "DVN", "PXD"],
+    "tech":         ["MSFT", "GOOGL", "META", "AAPL", "AMZN", "NVDA", "AMD", "INTC", "QCOM", "TXN", "MU", "AMAT"],
+    "retail":       ["WMT", "TGT", "COST", "DG", "DLTR", "KR", "ACI", "BJ", "FIVE", "OLLI"],
+    "pharma":       ["JNJ", "PFE", "MRK", "ABBV", "BMY", "LLY", "AMGN", "GILD", "BIIB", "REGN", "VRTX", "ZTS"],
+    "airlines":     ["DAL", "UAL", "AAL", "LUV", "ALK", "JBLU", "SAVE", "HA"],
+    "insurance":    ["AIG", "MET", "PRU", "AFL", "TRV", "ALL", "HIG", "GL", "LNC", "UNM"],
+    "utilities":    ["NEE", "DUK", "SO", "D", "AEP", "EXC", "SRE", "PCG", "ED", "XEL"],
+    "reits":        ["PLD", "AMT", "CCI", "EQIX", "PSA", "EQR", "AVB", "DRE", "VTR", "WELL"],
+    "media":        ["DIS", "NFLX", "CMCSA", "WBD", "PARA", "FOX", "FOXA", "LYV"],
+    "auto":         ["GM", "F", "TSLA", "TM", "HMC", "STLA", "AN", "KMX", "LAD"],
 }
 
 # --- Date range ---
