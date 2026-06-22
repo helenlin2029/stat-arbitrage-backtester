@@ -56,7 +56,21 @@ The model is trained on 2010–2019 data and evaluated on the unseen 2020–2024
 # Installation 
 pip install yfinance pandas numpy statsmodels hmmlearn scikit-learn matplotlib
 
+
 # Known Limitations
 1.) Uses Engle-Granger cointegration which is asymmetric where pair order affects results & pairing method with combinations as opposed to permutations. A future improvement would be to use the Johansen test.
 2.) The Kalman filter assumes the hedge ratio changes smoothly and may be slow to respond to sudden structural breaks.
 3.) Regime detection uses the same HMM parameters for all pairs rather than calibrating per pair.
+
+
+# Universe Results
+![Analysis Chart](images/analysis.png)
+
+Attached above are the results of the backtester performance 2020–2024 out-of-sample test period across 7 cointegrated pairs.
+Graphs:
+Cumulative P&L: regime-aware (blue) v. naive (red)
+Daily P&L Distribution
+Market Regime: Average P(stable)
+Rolling Sharpe Ratio
+Total P&L by Pair
+

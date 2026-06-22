@@ -142,7 +142,7 @@ print(f"\n{pair_df[['total_pnl','sharpe','max_drawdown','win_rate']].to_string()
 # ── PLOTS ──────────────────────────────────────────────────
 fig = plt.figure(figsize=(14, 10))
 fig.suptitle("Statistical Arbitrage Backtester — Analysis", fontsize=14, fontweight="bold")
-gs  = gridspec.GridSpec(3, 2, figure=fig, hspace=0.45, wspace=0.35)
+gs  = gridspec.GridSpec(3, 2, figure=fig, hspace=0.8, wspace=0.5)
 
 # Plot 1: Cumulative P&L — regime-aware vs naive
 ax1 = fig.add_subplot(gs[0, :])
